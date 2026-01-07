@@ -15,6 +15,18 @@ inputs:
 runs:
   using: "composite"
   steps:
+    - name: Install SDL2 on Linux/macOS
+      if: ${{ runner.os == 'Linux' || runner.os == 'macOS' }}
+      shell: bash
+      run: |
+        echo "Installing SDL2..."
+        if command -v brew >/dev/null 2>&1; then
+          brew install sdl2
+        elif [[ "$(uname -s)" == "Linux" ]]; then
+          sudo apt-get update
+          sudo apt-get install -y libsdl2-dev
+        fi
+
     - name: Install Sponge on Linux/macOS
       if: ${{ runner.os == 'Linux' || runner.os == 'macOS' }}
       shell: bash
@@ -47,3 +59,9 @@ runs:
       run: |
         Write-Host "Installing Sponge via winget..."
         winget install --exact xdpxi.sponge --silent --accept-package-agreements --accept-source-agreements
+
+    - name: Test Sponge installation
+      shell: bash
+      run: |
+        echo "Testing Sponge installation..."
+        sponge -v
