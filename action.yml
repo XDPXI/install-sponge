@@ -43,7 +43,8 @@ runs:
 
         curl -L "$URL" -o sponge.tar.gz
         sudo tar -xzf sponge.tar.gz -C /usr/local/bin
-        sudo chmod +x /usr/local/bin/sponge
+        sudo chmod +x /usr/local/bin/Sponge
+        sudo ln -sf /usr/local/bin/Sponge /usr/local/bin/sponge
         rm sponge.tar.gz
 
     - name: Install Sponge on Windows
