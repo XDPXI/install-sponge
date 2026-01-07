@@ -1,5 +1,5 @@
-name: "Install Sponge"
-description: "Install the Sponge language"
+name: "Install Sponge."
+description: "Install the Sponge language."
 author: "XDPXI"
 
 branding:
@@ -8,7 +8,7 @@ branding:
 
 inputs:
   version:
-    description: "Sponge version to install"
+    description: "Sponge version to install."
     required: false
     default: "1.1.0"
 
