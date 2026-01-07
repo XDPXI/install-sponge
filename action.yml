@@ -21,7 +21,6 @@ runs:
       run: |
         VERSION="${{ inputs.version }}"
 
-        # Force OS to either 'linux' or 'macos'
         if [[ "$(uname -s)" == "Darwin" ]]; then
           OS="macos"
         else
@@ -37,10 +36,9 @@ runs:
         else
           echo "Homebrew not found, downloading directly..."
           curl -L "$URL" -o sponge.tar.gz
-          tar -xzf sponge.tar.gz
-          BINARY=$(find . -type f -name 'sponge*' -perm /111 | head -n1)
-          chmod +x "$BINARY"
-          sudo mv "$BINARY" /usr/local/bin/sponge
+          sudo tar -xzf sponge.tar.gz -C /usr/local/bin
+          sudo chmod +x /usr/local/bin/sponge
+          rm sponge.tar.gz
         fi
 
     - name: Install Sponge on Windows
