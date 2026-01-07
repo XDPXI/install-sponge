@@ -41,17 +41,10 @@ runs:
 
         URL="http://cdn.xdpxi.net:8716/sponge/$VERSION/sponge-$VERSION-$OS-x86_64.tar.gz"
 
-        if command -v brew >/dev/null 2>&1; then
-          echo "Installing via Homebrew..."
-          brew tap XDPXI/tap
-          brew install XDPXI/tap/sponge
-        else
-          echo "Homebrew not found, downloading directly..."
-          curl -L "$URL" -o sponge.tar.gz
-          sudo tar -xzf sponge.tar.gz -C /usr/local/bin
-          sudo chmod +x /usr/local/bin/sponge
-          rm sponge.tar.gz
-        fi
+        curl -L "$URL" -o sponge.tar.gz
+        sudo tar -xzf sponge.tar.gz -C /usr/local/bin
+        sudo chmod +x /usr/local/bin/sponge
+        rm sponge.tar.gz
 
     - name: Install Sponge on Windows
       if: ${{ runner.os == 'Windows' }}
