@@ -1,0 +1,91 @@
+name: "Install Sponge"
+description: "Install the Sponge language"
+author: "XDPXI"
+
+inputs:
+  version:
+    description: "Sponge version to install"
+    required: false
+    default: "1.1.0"
+
+runs:
+  using: "composite"
+  steps:
+    - name: Install Sponge on Linux
+      if: runner.os == 'Linux'
+      shell: bash
+      run: |
+        VERSION="${{ inputs.version }}"
+        if command -v brew >/dev/null 2>&1; then
+          brew tap XDPXI/tap
+          brew install XDPXI/tap/sponge
+        else
+          echo "Homebrew not found, downloading directly..."
+          URL="http://cdn.xdpxi.net:8716/sponge/$VERSION/sponge-$VERSION-linux-x86_64.tar.gz"
+          CHECKSUM_URL="http://cdn.xdpxi.net:8716/sponge/$VERSION/sponge-$VERSION-linux-x86_64.sha256"
+
+          curl -L "$URL" -o sponge.tar.gz
+          curl -L "$CHECKSUM_URL" -o sponge.sha256
+
+          echo "$(cat sponge.sha256)  sponge.tar.gz" | sha256sum -c -
+
+          tar -xzf sponge.tar.gz
+          chmod +x sponge
+          sudo mv sponge /usr/local/bin/sponge
+        fi
+
+    - name: Install Sponge on macOS
+      if: runner.os == 'macOS'
+      shell: bash
+      run: |
+        VERSION="${{ inputs.version }}"
+        ARCH=$(uname -m)
+        if command -v brew >/dev/null 2>&1; then
+          brew tap XDPXI/tap
+          brew install XDPXI/tap/sponge
+        else
+          echo "Homebrew not found, downloading directly..."
+          if [[ "$ARCH" == "arm64" ]]; then
+            URL="http://cdn.xdpxi.net:8716/sponge/$VERSION/sponge-$VERSION-macos-aarch64.tar.gz"
+            CHECKSUM_URL="http://cdn.xdpxi.net:8716/sponge/$VERSION/sponge-$VERSION-macos-aarch64.sha256"
+          else
+            URL="http://cdn.xdpxi.net:8716/sponge/$VERSION/sponge-$VERSION-macos-x86_64.tar.gz"
+            CHECKSUM_URL="http://cdn.xdpxi.net:8716/sponge/$VERSION/sponge-$VERSION-macos-x86_64.sha256"
+          fi
+
+          curl -L "$URL" -o sponge.tar.gz
+          curl -L "$CHECKSUM_URL" -o sponge.sha256
+
+          echo "$(cat sponge.sha256)  sponge.tar.gz" | shasum -a 256 -c -
+
+          tar -xzf sponge.tar.gz
+          chmod +x sponge
+          sudo mv sponge /usr/local/bin/sponge
+        fi
+
+    - name: Install Sponge on Windows
+      if: runner.os == 'Windows'
+      shell: pwsh
+      run: |
+        $VERSION="${{ inputs.version }}"
+        if (Get-Command winget -ErrorAction SilentlyContinue) {
+          winget install --exact xdpxi.sponge --source winget
+        } else {
+          Write-Host "Winget not found, downloading directly..."
+          $url = "http://cdn.xdpxi.net:8716/sponge/$VERSION/sponge-$VERSION-windows-portable.tar.gz"
+          $checksumUrl = "http://cdn.xdpxi.net:8716/sponge/$VERSION/sponge-$VERSION-windows-portable.sha256"
+          $output = "$env:TEMP\sponge.tar.gz"
+          $checksumFile = "$env:TEMP\sponge.sha256"
+
+          Invoke-WebRequest $url -OutFile $output
+          Invoke-WebRequest $checksumUrl -OutFile $checksumFile
+
+          $sha256 = Get-FileHash $output -Algorithm SHA256
+          $expected = Get-Content $checksumFile
+          if ($sha256.Hash -ne $expected) { throw "SHA256 mismatch!" }
+
+          # Extract tar.gz (requires tar available)
+          mkdir "$env:USERPROFILE\.sponge"
+          tar -xzf $output -C "$env:USERPROFILE\.sponge"
+          $env:PATH += ";$env:USERPROFILE\.sponge"
+        fi
