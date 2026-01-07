@@ -2,6 +2,10 @@ name: "Install Sponge"
 description: "Install the Sponge language"
 author: "XDPXI"
 
+branding:
+  color: "yellow"
+  icon: "arrow-down-circle"
+
 inputs:
   version:
     description: "Sponge version to install"
