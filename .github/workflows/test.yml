@@ -10,5 +10,5 @@ jobs:
     steps:
       - uses: xdpxi/install-sponge@v1
         with:
-          version: "1.1.0"
+          version: "1.1.1"
       - run: sponge -v
