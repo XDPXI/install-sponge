@@ -2,7 +2,7 @@ name: Test Install Sponge
 
 on:
   schedule:
-    - cron: "0 */12 * * *"
+    - cron: "0 */24 * * *"
 
 jobs:
   test:
@@ -10,5 +10,5 @@ jobs:
     steps:
       - uses: xdpxi/install-sponge@v1
         with:
-          version: "1.1.1"
+          version: "1.1.3"
       - run: sponge -v
